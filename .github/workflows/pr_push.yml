@@ -20,7 +20,7 @@ jobs:
     uses: ./.github/workflows/reusable_checks.yml
   DocsBuild:
     uses: ./.github/workflows/reusable_docs_build.yml
-  Build CI Container:
+  BuildCIContainer:
     uses: ./.github/workflows/build_ci_container.yaml  
   Nightly:
     uses: ./.github/workflows/nightly.yml
