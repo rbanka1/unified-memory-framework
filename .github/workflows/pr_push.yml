@@ -21,7 +21,8 @@ jobs:
   DocsBuild:
     uses: ./.github/workflows/reusable_docs_build.yml
   BuildCIContainer:
-    uses: ./.github/workflows/build_ci_container.yaml  
+    secrets: inherit
+    uses: ./.github/workflows/build_ci_container.yaml
   Nightly:
     uses: ./.github/workflows/nightly.yml
   FastBuild:
