@@ -12,38 +12,33 @@ env:
 jobs:
   FastBuild_Linux:
     name: Fast builds (Linux)
-    runs-on: ubuntu-latest  
-    container:
-      image: rbanka974/umf3-ubuntu-20.04:latest
-      options: --user root --privileged
-      volumes:
-        - /home/runner/work/unified-memory-framework/unified-memory-framework:/home/runner/work/unified-memory-framework/unified-memory-framework
-
+    runs-on: ubuntu-latest
     env:
       VCPKG_PATH: "${{github.workspace}}/build/vcpkg/packages/hwloc_x64-windows;${{github.workspace}}/build/vcpkg/packages/tbb_x64-windows;${{github.workspace}}/build/vcpkg/packages/jemalloc_x64-windows"
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            disjoint: 'ON'
-            build_tests: 'ON'
-            extra_build_options: '-DCMAKE_BUILD_TYPE=Release -DUMF_BUILD_BENCHMARKS=ON -DUMF_BUILD_BENCHMARKS_MT=ON'
-            simple_cmake: 'OFF'
-          - os: ubuntu-latest
-            disjoint: 'OFF'
-            build_tests: 'OFF'
-            extra_build_options: '-DCMAKE_BUILD_TYPE=Release -DUMF_BUILD_BENCHMARKS=ON'
-            simple_cmake: 'OFF'
-          - os: ubuntu-latest
-            disjoint: 'OFF'
-            build_tests: 'ON'
-            extra_build_options: '-DCMAKE_BUILD_TYPE=Release'
-            simple_cmake: 'ON'
+        os: [ubuntu-latest, ubuntu-20.04]
+        disjoint: ['ON', 'OFF']
+        build_tests: ['ON', 'OFF']
+        simple_cmake: ['ON', 'OFF']
+        extra_build_options: 
+          - '-DCMAKE_BUILD_TYPE=Release -DUMF_BUILD_BENCHMARKS=ON -DUMF_BUILD_BENCHMARKS_MT=ON'
+          - '-DCMAKE_BUILD_TYPE=Release -DUMF_BUILD_BENCHMARKS=ON'
+          - '-DCMAKE_BUILD_TYPE=Release'
+        exclude:
           - os: ubuntu-20.04
-            disjoint: 'OFF'
+            disjoint: 'ON'
+        include:
+          - os: ubuntu-20.04
             build_tests: 'ON'
-            extra_build_options: '-DCMAKE_BUILD_TYPE=Release'
             simple_cmake: 'ON'
+            extra_build_options: '-DCMAKE_BUILD_TYPE=Release'
+            container_image: rbanka974/umf3-ubuntu-20.04:latest
+    container:
+      image: ${{ matrix.container_image }}
+      options: --user root --privileged
+      volumes:
+        - /home/runner/work/unified-memory-framework/unified-memory-framework:/home/runner/work/unified-memory-framework/unified-memory-framework
 
     steps:
     - name: Checkout repository

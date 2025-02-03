@@ -24,6 +24,7 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yaml
   Nightly:
+    needs: [BuildCIContainer]
     uses: ./.github/workflows/nightly.yml
   FastBuild:
     name: Fast builds
