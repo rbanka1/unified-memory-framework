@@ -23,13 +23,16 @@ jobs:
   BuildCIContainer:
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yaml
-  Nightly:
-    needs: [BuildCIContainer]
-    uses: ./.github/workflows/nightly.yml
   FastBuild:
-    name: Fast builds
-    needs: [CodeChecks, DocsBuild]
-    uses: ./.github/workflows/reusable_fast.yml
+      name: Fast builds
+      needs: [BuildCIContainer]
+      uses: ./.github/workflows/reusable_fast.yml  
+  Nightly:
+    uses: ./.github/workflows/nightly.yml
+  # FastBuild:
+  #   name: Fast builds
+  #   needs: [CodeChecks, DocsBuild]
+  #   uses: ./.github/workflows/reusable_fast.yml
   Build:
     name: Basic builds
     needs: [FastBuild]

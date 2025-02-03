@@ -50,10 +50,9 @@ jobs:
         working-directory: ${{github.workspace}}/build
         run: ctest -C ${{matrix.build_type}} --output-on-failure --verbose -L "fuzz-long"
 
-  FastBuild:
-    name: Fast builds
-    needs: [BuildCIContainer]
-    uses: ./.github/workflows/reusable_fast.yml
+  # FastBuild:
+  #   name: Fast builds
+  #   uses: ./.github/workflows/reusable_fast.yml
 
   valgrind:
     name: Valgrind
