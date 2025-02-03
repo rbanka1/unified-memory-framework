@@ -22,7 +22,7 @@ jobs:
     uses: ./.github/workflows/reusable_docs_build.yml
   BuildCIContainer:
     secrets: inherit
-    uses: ./.github/workflows/build_ci_container.yaml
+    uses: ./.github/workflows/build_ci_container.yml
   FastBuild:
       name: Fast builds
       needs: [BuildCIContainer]
