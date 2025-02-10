@@ -35,7 +35,7 @@ jobs:
   #   uses: ./.github/workflows/reusable_fast.yml
   Build:
     name: Basic builds
-    # needs: [FastBuild]
+    needs: [FastBuild]
     uses: ./.github/workflows/reusable_basic.yml
   DevDax:
     needs: [FastBuild]
