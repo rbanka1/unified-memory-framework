@@ -28,8 +28,10 @@ jobs:
         run: |
           docker build -f .github/docker/ubuntu-20.04.Dockerfile -t $DOCKERHUB_USERNAME/umf2-ubuntu-20.04:latest .
           docker build -f .github/docker/ubuntu-22.04.Dockerfile -t $DOCKERHUB_USERNAME/umf2-ubuntu-22.04:latest .
+          docker build -f .github/docker/ubuntu-24.04.Dockerfile -t $DOCKERHUB_USERNAME/umf2-ubuntu-24.04:latest .
 
       - name: Push Docker image to DockerHub
         run: |
           docker push $DOCKERHUB_USERNAME/umf2-ubuntu-20.04:latest
           docker push $DOCKERHUB_USERNAME/umf2-ubuntu-22.04:latest
+          docker push $DOCKERHUB_USERNAME/umf2-ubuntu-24.04:latest
