@@ -124,11 +124,11 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Get UMF version
-      run: |
-        git config --global --add safe.directory /__w/unified-memory-framework/unified-memory-framework
-        VERSION=$(git describe --tags --abbrev=0 | grep -oP '\d+\.\d+\.\d+')
-        echo "UMF_VERSION=$VERSION" >> $GITHUB_ENV
+    # - name: Get UMF version
+    #   run: |
+    #     git config --global --add safe.directory /__w/unified-memory-framework/unified-memory-framework
+    #     VERSION=$(git describe --tags --abbrev=0 | grep -oP '\d+\.\d+\.\d+')
+    #     echo "UMF_VERSION=$VERSION" >> $GITHUB_ENV
     
     # TODO: either add dockerimage for 24.04 to remove these three jobs or leave it
     - name: Install libhwloc
