@@ -20,12 +20,12 @@ jobs:
     uses: ./.github/workflows/reusable_checks.yml
   DocsBuild:
     uses: ./.github/workflows/reusable_docs_build.yml
-  BuildCIContainer:
-    secrets: inherit
-    uses: ./.github/workflows/build_ci_container.yml
+  # BuildCIContainer:
+  #   secrets: inherit
+  #   uses: ./.github/workflows/build_ci_container.yml
   FastBuild:
       name: Fast builds
-      needs: [CodeChecks, DocsBuild, BuildCIContainer]
+      needs: [CodeChecks, DocsBuild]
       uses: ./.github/workflows/reusable_fast.yml  
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
