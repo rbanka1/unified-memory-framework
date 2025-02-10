@@ -49,12 +49,25 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get clean all
 
+# Install hwloc
+COPY .github/scripts/install_hwloc.sh /opt/umf/install_hwloc.sh
+RUN apt-get update \
+	&& apt-get install -y dos2unix libtool \
+	&& dos2unix /opt/umf/install_hwloc.sh \
+	&& bash -x /opt/umf/install_hwloc.sh \
+	&& ldconfig \
+	&& rm -f /opt/umf/install_hwloc.sh
+
+# Install valgrind
+RUN apt-get update && \
+	apt-get install -y valgrind cmake hwloc libhwloc-dev libnuma-dev libtbb-dev
+
 # Prepare a dir (accessible by anyone)
-RUN mkdir --mode 777 /opt/umf/
+RUN mkdir -p --mode 777 /opt/umf/
 
 # Additional dependencies (installed via pip)
 COPY third_party/requirements.txt /opt/umf/requirements.txt
-RUN pip3 install --no-cache-dir -r /opt/umf/requirements.txt
+# RUN pip3 install --no-cache-dir -r /opt/umf/requirements.txt
 
 # Add a new (non-root) 'test_user'
 ENV USER test_user
