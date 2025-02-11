@@ -22,7 +22,7 @@ jobs:
     uses: ./.github/workflows/reusable_docs_build.yml
   BuildCIContainer:
     secrets: inherit
-    if: ${{ github.event_name == 'pull_request' || contains(join(github.event.head_commit.modified, ''), '.github/docker/') }}
+    if: ${{ contains(join(github.event.head_commit.modified, ''), '.github/docker/') }}
     uses: ./.github/workflows/build_ci_container.yml
   FastBuild:
       name: Fast builds
