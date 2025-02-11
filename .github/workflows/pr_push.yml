@@ -50,6 +50,7 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yml
   FastBuild:
+      runs-on: ubuntu-latest
       name: Fast builds
       needs: [CodeChecks, DocsBuild, BuildCIContainer]
       if: always()
