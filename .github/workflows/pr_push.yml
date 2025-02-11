@@ -51,8 +51,9 @@ jobs:
     uses: ./.github/workflows/build_ci_container.yml
   FastBuild:
       name: Fast builds
-      needs: [CodeChecks, DocsBuild, BuildCIContainer]
-      if: ${{ !contains(needs.BuildCIContainer.result, 'failure') }}
+      # needs: [CodeChecks, DocsBuild, BuildCIContainer]
+      needs: [BuildCIContainer]
+      if: ${{ !contains(needs.BuildCIContainer.outputs.status, 'failure') }}
       uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
