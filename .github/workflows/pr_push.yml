@@ -26,16 +26,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Get modified files for PR
+      - name: Get changed files
+        uses: tj-actions/changed-files@v45.0.3
+        id: changed_files
+        with:
+          files: '*.Dockerfile' 
+
+      - name: Print modified files
         run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "Modified files in PR:"
-            git fetch --prune --unshallow
-            git diff --name-only ${{ github.event.before }} ${{ github.sha }}
-          else
-            echo "Modified files:"
-            echo "${{ toJson(github.event.head_commit.modified) }}"
-          fi
+          echo "Modified files in push:"
+          echo "${{ steps.changed_files.outputs.files }}"
+          
   BuildCIContainer:
     secrets: inherit
     if: ${{ contains(github.event.head_commit.modified, '.github/docker/') }}
