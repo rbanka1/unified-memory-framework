@@ -67,7 +67,7 @@ jobs:
           echo "found any?:" "${{ steps.check_statuses.outputs.found }}"
     
       - name: Cancel if failure
-        if: fromJSON(steps.check_statuses.outputs.found)
+        if: ${{ steps.check_statuses.outputs.found == 'false' }}
         run: |
           echo "status: ${{ steps.check_statuses.outputs.found }}"
 
