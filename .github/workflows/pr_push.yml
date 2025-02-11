@@ -44,11 +44,12 @@ jobs:
           # done
 
   BuildCIContainer:
-    secrets: inherit
     if: ${{ contains(join(needs.PrintModifiedFiles.outputs.changed_files, ' '), '.github/docker/') }}
+    needs: [PrintModifiedFiles]
+    secrets: inherit
     uses: ./.github/workflows/build_ci_container.yml
-    with: 
-      changed_files: ${{ needs.PrintModifiedFiles.outputs.changed_files }}
+    # with: 
+    #   changed_files: ${{ needs.PrintModifiedFiles.outputs.changed_files }}
   FastBuild:
       name: Fast builds
       if: ${{ needs.BuildCIContainer.outputs.status != 'failure' }}
