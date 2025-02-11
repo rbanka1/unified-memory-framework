@@ -75,7 +75,6 @@ jobs:
   FastBuild:
     name: Fast builds
     needs: [CheckStatus]
-    uses: ./.github/workflows/reusable_fast.yml
     steps:
       - name: Print check_status
         run: |
