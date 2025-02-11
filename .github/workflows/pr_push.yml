@@ -25,18 +25,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          fetch-depth: 0
 
       - name: Get changed files
         uses: tj-actions/changed-files@v45.0.3
-        id: changed_files
-        with:
-          files: '*.Dockerfile' 
 
-      - name: Print modified files
+      - name: List all changed files
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          echo "Modified files in push:"
-          echo "${{ steps.changed_files.outputs.files }}"
-          
+          for file in ${ALL_CHANGED_FILES}; do
+            echo "$file was changed"
+          done
+
   BuildCIContainer:
     secrets: inherit
     if: ${{ contains(github.event.head_commit.modified, '.github/docker/') }}
