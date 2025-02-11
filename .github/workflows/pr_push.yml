@@ -77,6 +77,11 @@ jobs:
     if: always()
     needs: [CheckStatus]
     uses: ./.github/workflows/reusable_fast.yml
+    steps:
+    - name: Log status
+      run: |
+        echo "status: ${{ needs.CheckStatus.result }}"
+        echo "conclusion: ${{ needs.CheckStatus.conclusion }}"
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
