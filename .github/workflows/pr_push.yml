@@ -52,7 +52,7 @@ jobs:
   FastBuild:
       name: Fast builds
       needs: [CodeChecks, DocsBuild, BuildCIContainer]
-      if: ${{ needs.BuildCIContainer.outputs.status != 'failure' }}
+      if: ${{ !contains(needs.BuildCIContainer.result, 'failure') }}
       uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
