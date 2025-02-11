@@ -67,10 +67,13 @@ jobs:
           echo "found any?:" "${{ steps.check_statuses.outputs.found }}"
     
       - name: Cancel if failure
-        if: steps.check_statuses.outputs.found == "false"
-        run: exit 1
+        if: fromJSON(steps.check_statuses.outputs.found)
+        run: |
+          echo "status: ${{ steps.check_statuses.outputs.found }}"
+          exit 1
 
       - name: FastBuild run
+        if: fromJSON(steps.check_statuses.outputs.found)
         uses: ./.github/workflows/reusable_fast.yml
 
   # FastBuild:
