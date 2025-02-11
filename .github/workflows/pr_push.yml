@@ -73,6 +73,7 @@ jobs:
           exit 1
 
   FastBuild:
+    runs-on: ubuntu-latest
     name: Fast builds
     if: always()
     needs: [CheckStatus]
