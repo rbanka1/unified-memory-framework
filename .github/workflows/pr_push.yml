@@ -67,25 +67,24 @@ jobs:
           echo "jobs:" "${{ steps.check_statuses.outputs.jobs }}"
           echo "found any?:" "${{ steps.check_statuses.outputs.found }}"
     
-      # - name: Cancel if failure
-      #   if: ${{ steps.check_statuses.outputs.found == 'true' }}
-      #   run: |
-      #     exit 1
+      - name: Cancel if failure
+        if: ${{ steps.check_statuses.outputs.found == 'true' }}
+        run: |
+          exit 1
 
   FastBuild:
-    runs-on: ubuntu-latest
     name: Fast builds
     needs: [CheckStatus]
-    steps:
-      - name: Print check_status
-        run: |
-          echo "check_status: ${{ needs.CheckStatus.outputs.check_status }}"
-    
+    uses: ./.github/workflows/reusable_fast.yml
   # FastBuild:
-  #     name: Fast builds
-  #     needs: [CheckStatus]
-  #     if: ${{ needs.CheckStatus.outputs.check_status == 'false' }}
-  #     uses: ./.github/workflows/reusable_fast.yml
+  #   runs-on: ubuntu-latest
+  #   name: Fast builds
+  #   needs: [CheckStatus]
+  #   steps:
+  #     - name: Print check_status
+  #       run: |
+  #         echo "check_status: ${{ needs.CheckStatus.outputs.check_status }}"
+    
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
