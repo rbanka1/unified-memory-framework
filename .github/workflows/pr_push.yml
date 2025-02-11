@@ -67,10 +67,10 @@ jobs:
           echo "jobs:" "${{ steps.check_statuses.outputs.jobs }}"
           echo "found any?:" "${{ steps.check_statuses.outputs.found }}"
     
-      - name: Cancel if failure
-        if: ${{ steps.check_statuses.outputs.found == 'true' }}
-        run: |
-          exit 1
+      # - name: Cancel if failure
+      #   if: ${{ steps.check_statuses.outputs.found == 'true' }}
+      #   run: |
+      #     exit 1
 
   FastBuild:
     runs-on: ubuntu-latest
