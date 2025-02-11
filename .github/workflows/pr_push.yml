@@ -22,7 +22,7 @@ jobs:
     uses: ./.github/workflows/reusable_docs_build.yml
   PrintModifiedFiles:
     runs-on: ubuntu-latest
-    output:
+    outputs:
       changed_files: ${{ steps.changed-files.outputs.all_changed_files }}
     steps:
       - name: Checkout code
