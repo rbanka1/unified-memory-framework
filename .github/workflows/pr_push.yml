@@ -20,6 +20,7 @@ jobs:
     uses: ./.github/workflows/reusable_checks.yml
   DocsBuild:
     uses: ./.github/workflows/reusable_docs_build.yml
+
   PrintModifiedFiles:
     runs-on: ubuntu-latest
     outputs:
@@ -40,21 +41,19 @@ jobs:
         run: |
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
-          # for file in ${ALL_CHANGED_FILES}; do
-          #   echo "$file was changed"
-          # done
-
   BuildCIContainer:
     if: ${{ contains(join(needs.PrintModifiedFiles.outputs.changed_files, ' '), '.github/docker/') }}
     needs: [PrintModifiedFiles]
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yml
+
   CheckStatus:
       runs-on: ubuntu-latest
       outputs:
-        status: ${{ steps.check_statuses.outputs.found }}
-      name: Fast builds
-      needs: [CodeChecks, DocsBuild, BuildCIContainer]
+        check_status: ${{ steps.check_statuses.outputs.found }}
+      name: Check Status
+      needs: [BuildCIContainer]
+      # needs: [CodeChecks, DocsBuild, BuildCIContainer]
       if: always()
       steps:
       - uses: lwhiteley/dependent-jobs-result-check@v1
@@ -74,10 +73,19 @@ jobs:
           exit 1
 
   FastBuild:
-      name: Fast builds
-      needs: [CheckStatus]
-      if: ${{ needs.CheckStatus.outputs.status == 'false' }}
-      uses: ./.github/workflows/reusable_fast.yml
+    name: Fast builds
+    needs: [CheckStatus]
+    uses: ./.github/workflows/reusable_fast.yml
+    steps:
+      - name: Print check_status
+        run: |
+          echo "check_status: ${{ needs.CheckStatus.outputs.check_status }}"
+    
+  # FastBuild:
+  #     name: Fast builds
+  #     needs: [CheckStatus]
+  #     if: ${{ needs.CheckStatus.outputs.check_status == 'false' }}
+  #     uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
