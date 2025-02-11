@@ -52,8 +52,7 @@ jobs:
       outputs:
         check_status: ${{ steps.check_statuses.outputs.found }}
       name: Check Status
-      needs: [BuildCIContainer]
-      # needs: [CodeChecks, DocsBuild, BuildCIContainer]
+      needs: [CodeChecks, DocsBuild, BuildCIContainer]
       if: always()
       steps:
       - uses: lwhiteley/dependent-jobs-result-check@v1
