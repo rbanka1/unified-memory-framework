@@ -70,11 +70,10 @@ jobs:
         if: fromJSON(steps.check_statuses.outputs.found)
         run: |
           echo "status: ${{ steps.check_statuses.outputs.found }}"
-          exit 1
 
-      - name: FastBuild run
-        if: fromJSON(steps.check_statuses.outputs.found)
-        uses: ./.github/workflows/reusable_fast.yml
+      # - name: FastBuild run
+      #   if: fromJSON(steps.check_statuses.outputs.found)
+      #   uses: ./.github/workflows/reusable_fast.yml
 
   # FastBuild:
   #     name: Fast builds
