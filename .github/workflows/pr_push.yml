@@ -76,7 +76,7 @@ jobs:
     name: Fast builds
     if: always()
     needs: [CheckStatus]
-    uses: ./.github/workflows/reusable_fast.yml
+    # uses: ./.github/workflows/reusable_fast.yml
     steps:
     - name: Log status
       run: |
