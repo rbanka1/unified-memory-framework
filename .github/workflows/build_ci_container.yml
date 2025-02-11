@@ -1,11 +1,14 @@
 name: BuildCIContainer
 
-on:
-  push:
-    paths:
-      - '.github/docker/**'
-    pull_request:
-    workflow_dispatch:
+on: 
+  workflow_call:
+  workflow_dispatch:
+    
+  # push:
+  #   paths:
+  #     - '.github/docker/**'
+  #   pull_request:
+  #   workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,6 +16,8 @@ permissions:
 jobs: 
   build-ci-container:
     runs-on: ubuntu-latest
+    outputs: 
+      status: ${{ job.status }}
     env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

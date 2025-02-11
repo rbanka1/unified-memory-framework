@@ -20,12 +20,14 @@ jobs:
     uses: ./.github/workflows/reusable_checks.yml
   DocsBuild:
     uses: ./.github/workflows/reusable_docs_build.yml
-  # BuildCIContainer:
-  #   secrets: inherit
-  #   uses: ./.github/workflows/build_ci_container.yml
+  BuildCIContainer:
+    secrets: inherit
+    if: ${{ github.event_name == 'pull_request' || contains(join(github.event.head_commit.modified, ''), '.github/docker/') }}
+    uses: ./.github/workflows/build_ci_container.yml
   FastBuild:
       name: Fast builds
-      needs: [CodeChecks, DocsBuild]
+      if: ${{ needs.BuildCIContainer.outputs.status != 'failure' }}
+      # needs: [CodeChecks, DocsBuild]
       uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
