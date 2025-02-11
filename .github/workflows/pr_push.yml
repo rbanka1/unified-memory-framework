@@ -77,15 +77,6 @@ jobs:
     if: always()
     needs: [CheckStatus]
     uses: ./.github/workflows/reusable_fast.yml
-  # FastBuild:
-  #   runs-on: ubuntu-latest
-  #   name: Fast builds
-  #   needs: [CheckStatus]
-  #   steps:
-  #     - name: Print check_status
-  #       run: |
-  #         echo "check_status: ${{ needs.CheckStatus.outputs.check_status }}"
-    
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
