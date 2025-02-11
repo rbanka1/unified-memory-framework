@@ -74,6 +74,7 @@ jobs:
 
   FastBuild:
     name: Fast builds
+    if: always()
     needs: [CheckStatus]
     uses: ./.github/workflows/reusable_fast.yml
   # FastBuild:
