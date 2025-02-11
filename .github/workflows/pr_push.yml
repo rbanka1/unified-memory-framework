@@ -22,6 +22,8 @@ jobs:
     uses: ./.github/workflows/reusable_docs_build.yml
   PrintModifiedFiles:
     runs-on: ubuntu-latest
+    output:
+      changed_files: ${{ steps.changed-files.outputs.all_changed_files }}
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -36,14 +38,17 @@ jobs:
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
-          done
+          echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+          # for file in ${ALL_CHANGED_FILES}; do
+          #   echo "$file was changed"
+          # done
 
   BuildCIContainer:
     secrets: inherit
-    if: ${{ contains(github.event.head_commit.modified, '.github/docker/') }}
+    if: ${{ contains(join(needs.PrintModifiedFiles.outputs.changed_files, ' '), '.github/docker/') }}
     uses: ./.github/workflows/build_ci_container.yml
+    with: 
+      changed_files: ${{ needs.PrintModifiedFiles.outputs.changed_files }}
   FastBuild:
       name: Fast builds
       if: ${{ needs.BuildCIContainer.outputs.status != 'failure' }}
