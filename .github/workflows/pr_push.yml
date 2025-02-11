@@ -51,10 +51,35 @@ jobs:
     uses: ./.github/workflows/build_ci_container.yml
   FastBuild:
       name: Fast builds
-      # needs: [CodeChecks, DocsBuild, BuildCIContainer]
-      needs: [BuildCIContainer]
-      if: ${{ !contains(needs.BuildCIContainer.outputs.status, 'failure') }}
-      uses: ./.github/workflows/reusable_fast.yml
+      needs: [CodeChecks, DocsBuild, BuildCIContainer]
+      if: always()
+      steps:
+      - uses: lwhiteley/dependent-jobs-result-check@v1
+        id: check_statuses
+        with:
+          statuses: failure
+          dependencies: ${{toJSON(needs) }}
+      - name: Log output
+        run: |
+          echo "statuses:" "${{ steps.check_statuses.outputs.statuses }}"
+          echo "jobs:" "${{ steps.check_statuses.outputs.jobs }}"
+          echo "found any?:" "${{ steps.check_statuses.outputs.found }}"
+    
+      - name: Cancel if failure
+        if: fromJSON(steps.check_statuses.outputs.found)
+        run: |
+          exit 1
+
+      - name: FastBuild run
+        if: fromJSON(steps.check_statuses.outputs.found)
+        uses: ./.github/workflows/reusable_fast.yml
+
+  # FastBuild:
+  #     name: Fast builds
+  #     # needs: [CodeChecks, DocsBuild, BuildCIContainer]
+  #     needs: [BuildCIContainer]
+  #     if: ${{ !contains(needs.BuildCIContainer.outputs.status, 'failure') }}
+  #     uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
