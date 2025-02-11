@@ -71,6 +71,9 @@ jobs:
         run: |
           exit 1
 
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
       - name: FastBuild run
         if: ${{ steps.check_statuses.outputs.found == 'false' }}
         uses: ./.github/workflows/reusable_fast.yml
