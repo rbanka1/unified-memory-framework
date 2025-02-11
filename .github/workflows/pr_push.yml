@@ -54,7 +54,7 @@ jobs:
       name: Check Status
       needs: [BuildCIContainer]
       # needs: [CodeChecks, DocsBuild, BuildCIContainer]
-      if: always()
+      if: ${{ always() }}
       steps:
       - uses: lwhiteley/dependent-jobs-result-check@v1
         id: check_statuses
@@ -75,7 +75,6 @@ jobs:
   FastBuild:
     runs-on: ubuntu-latest
     name: Fast builds
-    if: always()
     needs: [CheckStatus]
     # uses: ./.github/workflows/reusable_fast.yml
     steps:
