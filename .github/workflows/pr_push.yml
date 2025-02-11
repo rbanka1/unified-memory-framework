@@ -49,8 +49,10 @@ jobs:
     needs: [PrintModifiedFiles]
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yml
-  FastBuild:
+  CheckStatus:
       runs-on: ubuntu-latest
+      outputs:
+        status: ${{ steps.check_statuses.outputs.found }}
       name: Fast builds
       needs: [CodeChecks, DocsBuild, BuildCIContainer]
       if: always()
@@ -71,19 +73,11 @@ jobs:
         run: |
           exit 1
 
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
-      - name: FastBuild run
-        if: ${{ steps.check_statuses.outputs.found == 'false' }}
-        uses: ./.github/workflows/reusable_fast.yml
-
-  # FastBuild:
-  #     name: Fast builds
-  #     # needs: [CodeChecks, DocsBuild, BuildCIContainer]
-  #     needs: [BuildCIContainer]
-  #     if: ${{ !contains(needs.BuildCIContainer.outputs.status, 'failure') }}
-  #     uses: ./.github/workflows/reusable_fast.yml
+  FastBuild:
+      name: Fast builds
+      needs: [CheckStatus]
+      if: ${{ needs.CheckStatus.outputs.status == 'false' }}
+      uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
