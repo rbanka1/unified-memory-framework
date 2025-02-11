@@ -39,7 +39,7 @@ jobs:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
-          
+
           # for file in ${ALL_CHANGED_FILES}; do
           #   echo "$file was changed"
           # done
@@ -49,12 +49,10 @@ jobs:
     needs: [PrintModifiedFiles]
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yml
-    # with: 
-    #   changed_files: ${{ needs.PrintModifiedFiles.outputs.changed_files }}
   FastBuild:
       name: Fast builds
       if: ${{ needs.BuildCIContainer.outputs.status != 'failure' }}
-      # needs: [CodeChecks, DocsBuild]
+      needs: [CodeChecks, DocsBuild]
       uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
