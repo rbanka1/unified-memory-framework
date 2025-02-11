@@ -20,6 +20,16 @@ jobs:
     uses: ./.github/workflows/reusable_checks.yml
   DocsBuild:
     uses: ./.github/workflows/reusable_docs_build.yml
+  PrintModifiedFiles:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Print modified files
+        run: |
+          echo "Modified files:"
+          echo "${{ toJson(github.event.head_commit.modified) }}"
   BuildCIContainer:
     secrets: inherit
     if: ${{ contains(github.event.head_commit.modified, '.github/docker/') }}
