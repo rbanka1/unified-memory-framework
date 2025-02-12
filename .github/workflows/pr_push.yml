@@ -47,33 +47,34 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yml
 
-  # CheckStatus:
-  #     runs-on: ubuntu-latest
-  #     outputs:
-  #       check_status: ${{ steps.check_statuses.outputs.found }}
-  #     name: Check Status
-  #     needs: [CodeChecks, DocsBuild, BuildCIContainer]
-  #     if: always()
-  #     steps:
-  #     - uses: lwhiteley/dependent-jobs-result-check@v1
-  #       id: check_statuses
-  #       with:
-  #         statuses: failure
-  #         dependencies: ${{toJSON(needs) }}
-  #     - name: Log output
-  #       run: |
-  #         echo "statuses:" "${{ steps.check_statuses.outputs.statuses }}"
-  #         echo "jobs:" "${{ steps.check_statuses.outputs.jobs }}"
-  #         echo "found any?:" "${{ steps.check_statuses.outputs.found }}"
+  CheckStatus:
+      runs-on: ubuntu-latest
+      outputs:
+        check_status: ${{ steps.check_statuses.outputs.found }}
+      name: Check Status
+      needs: [CodeChecks, DocsBuild, BuildCIContainer]
+      if: always()
+      steps:
+      - uses: lwhiteley/dependent-jobs-result-check@v1
+        id: check_statuses
+        with:
+          statuses: failure
+          dependencies: ${{toJSON(needs) }}
+      - name: Log output
+        run: |
+          echo "statuses:" "${{ steps.check_statuses.outputs.statuses }}"
+          echo "jobs:" "${{ steps.check_statuses.outputs.jobs }}"
+          echo "found any?:" "${{ steps.check_statuses.outputs.found }}"
     
-  #     - name: Cancel if failure
-  #       if: ${{ steps.check_statuses.outputs.found == 'true' }}
-  #       run: |
-  #         exit 1
+      - name: Cancel if failure
+        if: ${{ steps.check_statuses.outputs.found == 'true' }}
+        run: |
+          exit 1
 
   FastBuild:
     name: Fast builds
-    needs: [DocsBuild, BuildCIContainer]
+    needs: [CodeChecks, DocsBuild, CheckStatus]
+    if: ${{ always() && needs.CheckStatus.outputs.found != 'true' }}
     uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
