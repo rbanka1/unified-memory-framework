@@ -74,7 +74,7 @@ jobs:
   FastBuild:
     name: Fast builds
     if: ${{ (needs.BuildCIContainer.result == 'success' || needs.BuildCIContainer.result == 'skipped') }}
-    needs: [CodeChecks, DocsBuild]
+    needs: [CodeChecks, DocsBuild, BuildCIContainer]
     uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
