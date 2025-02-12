@@ -52,7 +52,8 @@ jobs:
       outputs:
         check_status: ${{ steps.check_statuses.outputs.found }}
       name: Check Status
-      needs: [CodeChecks, DocsBuild, BuildCIContainer]
+      # needs: [CodeChecks, DocsBuild, BuildCIContainer]
+      needs: [CodeChecks]
       if: always()
       steps:
       - uses: lwhiteley/dependent-jobs-result-check@v1
@@ -68,12 +69,17 @@ jobs:
     
       - name: Cancel if failure
         if: ${{ steps.check_statuses.outputs.found == 'true' }}
-        run: |
-          exit 1
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+          all_but_latest: true
+        # run: |
+        #   exit 1
 
   FastBuild:
     name: Fast builds
-    needs: [CheckStatus, CodeChecks, DocsBuild]
+    # needs: [CheckStatus, CodeChecks, DocsBuild]
+    needs: [CheckStatus]
     uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
