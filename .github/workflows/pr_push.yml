@@ -74,8 +74,13 @@ jobs:
   FastBuild:
     name: Fast builds
     needs: [CodeChecks, DocsBuild, CheckStatus]
-    if: ${{ always() && needs.CheckStatus.outputs.found != 'true' }}
+    if: ${{ always() }}
+    run: |
+      if [ "${{ needs.CheckStatus.outputs.found }}" == "true" ]; then
+        exit 1
+      fi
     uses: ./.github/workflows/reusable_fast.yml
+
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
