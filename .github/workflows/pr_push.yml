@@ -20,26 +20,28 @@ jobs:
     uses: ./.github/workflows/reusable_checks.yml
   DocsBuild:
     uses: ./.github/workflows/reusable_docs_build.yml
-
   PrintModifiedFiles:
-    runs-on: ubuntu-latest
-    outputs:
-      changed_files: ${{ steps.changed-files.outputs.all_changed_files }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-        with:
-          fetch-depth: 0
+    uses: ./.github/workflows/print_modified_files.yml
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v45.0.3
+  # PrintModifiedFiles:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     changed_files: ${{ steps.changed-files.outputs.all_changed_files }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+  #       with:
+  #         fetch-depth: 0
 
-      - name: List all changed files
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: |
-          echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+  #     - name: Get changed files
+  #       id: changed-files
+  #       uses: tj-actions/changed-files@v45.0.3
+
+  #     - name: List all changed files
+  #       env:
+  #         ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+  #       run: |
+  #         echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
   BuildCIContainer:
     if: ${{ contains(join(needs.PrintModifiedFiles.outputs.changed_files, ' '), '.github/docker/') }}
