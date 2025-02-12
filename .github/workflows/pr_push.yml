@@ -68,8 +68,11 @@ jobs:
     
       - name: Cancel if failure
         if: ${{ steps.check_statuses.outputs.found == 'true' }}
-        run: |
-          exit 1
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          workflow_id: ${{ github.run_id }}
+        # run: |
+        #   exit 1
 
   FastBuild:
     name: Fast builds
