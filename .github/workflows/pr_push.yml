@@ -72,15 +72,16 @@ jobs:
           exit 1
 
   FastBuild:
+    runs_on: ubuntu-latest
     name: Fast builds
     needs: [CodeChecks, DocsBuild, CheckStatus]
-    if: ${{ always() }}
-    run: |
-      if [ "${{ needs.CheckStatus.outputs.found }}" == "true" ]; then
-        exit 1
-      fi
-    uses: ./.github/workflows/reusable_fast.yml
+    if: ${{ always() && needs.CheckStatus.outputs.found != 'true' }}
+    steps:
+      - name: Print CheckStatus result
+        run: |
+         echo "status:" "${{ needs.CheckStatus.outputs.found }}"
 
+    # uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
