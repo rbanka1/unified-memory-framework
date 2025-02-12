@@ -72,7 +72,7 @@ jobs:
           exit 1
 
   FastBuild:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     name: Fast builds
     needs: [CodeChecks, DocsBuild, CheckStatus]
     if: ${{ always() && needs.CheckStatus.outputs.found != 'true' }}
