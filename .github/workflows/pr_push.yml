@@ -72,16 +72,9 @@ jobs:
   #         exit 1
 
   FastBuild:
-    runs-on: ubuntu-latest
-    if: always()
+    if: always() && (needs.BuildCIContainer.result == 'skipped' || needs.BuildCIContainer.result == 'success')
     needs: [CodeChecks, DocsBuild, BuildCIContainer]
-    steps:
-      - name: Fast builds
-        run: |
-          echo "result ${{needs.BuildCIContainer.result}}"
-    # if: ${{ needs.BuildCIContainer.result == 'skipped' }}
-    # needs: [CodeChecks, DocsBuild]
-    # uses: ./.github/workflows/reusable_fast.yml
+    uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
