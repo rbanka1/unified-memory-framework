@@ -73,6 +73,7 @@ jobs:
 
   FastBuild:
     runs-on: ubuntu-latest
+    if: always()
     needs: [CodeChecks, DocsBuild, BuildCIContainer]
     steps:
       - name: Fast builds
