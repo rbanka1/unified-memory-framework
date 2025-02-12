@@ -75,11 +75,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Fast builds
     needs: [CodeChecks, DocsBuild, CheckStatus]
-    if: ${{ always() && needs.CheckStatus.outputs.found != 'true' }}
+    if: ${{ always() }}
     steps:
       - name: Print CheckStatus result
         run: |
-         echo "status:" "${{ needs.CheckStatus.outputs.found }}"
+         echo "status:" "${{ needs.CheckStatus.outputs.check_status }}"
 
     # uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
