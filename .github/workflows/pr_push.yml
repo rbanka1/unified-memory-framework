@@ -39,6 +39,7 @@ jobs:
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
+          exit 1
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
   BuildCIContainer:
@@ -69,12 +70,8 @@ jobs:
     
       - name: Cancel if failure
         if: ${{ steps.check_statuses.outputs.found == 'true' }}
-        uses: styfle/cancel-workflow-action@0.9.1
-        with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
-          all_but_latest: true
-        # run: |
-        #   exit 1
+        run: |
+          exit 1
 
   FastBuild:
     name: Fast builds
