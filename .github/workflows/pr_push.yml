@@ -73,7 +73,7 @@ jobs:
 
   FastBuild:
     name: Fast builds
-    if: ${{ !cancelled() }}
+    if: ${{ (needs.BuildCIContainer.result == 'success' || needs.BuildCIContainer.result == 'skipped') }}
     needs: [CodeChecks, DocsBuild]
     uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
