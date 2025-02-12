@@ -9,7 +9,7 @@ jobs:
   print_modified_files:
     runs-on: ubuntu-latest
     outputs:
-      changed_files: ${{ steps.set-output-changed-files.outputs.changed_files }}
+      changed_files: ${{ steps.print_modified_files.outputs.all_changed_files }}
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -20,11 +20,8 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v45.0.3
 
-      - name: Set output for changed files
-        id: set-output-changed-files
-        run: echo "changed_files=${{ steps.changed-files.outputs.all_changed_files }}" >> $GITHUB_ENV
-
       - name: List all changed files
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          echo "Changed files:"
-          echo "${{ steps.changed-files.outputs.all_changed_files }}"
+          echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
