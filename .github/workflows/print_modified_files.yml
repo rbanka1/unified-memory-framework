@@ -25,4 +25,6 @@ jobs:
         run: echo "changed_files=${{ steps.changed-files.outputs.all_changed_files }}" >> $GITHUB_ENV
 
       - name: List all changed files
-        run: echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+        run: |
+          echo "Changed files:"
+          echo "${{ steps.changed-files.outputs.all_changed_files }}"
