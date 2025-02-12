@@ -73,6 +73,7 @@ jobs:
 
   FastBuild:
     runs-on: ubuntu-latest
+    needs: [BuildCIContainer]
     steps:
       - name: Fast builds
         run: |
