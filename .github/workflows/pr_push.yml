@@ -44,7 +44,7 @@ jobs:
   #         echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
   BuildCIContainer:
-    if: ${{ contains(join(needs.print_modified_files.outputs.changed_files, ' '), '.github/docker/') }}
+    if: ${{ contains(needs.PrintModifiedFiles.outputs.changed_files, '.github/docker/') }}
     needs: [PrintModifiedFiles]
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yml
