@@ -113,7 +113,7 @@ jobs:
             link_hwloc_statically: 'ON'
     runs-on: ${{matrix.os}}
     container:
-      image: ${{ matrix.os == 'ubuntu-20.04' && 'rbanka974/umf2-ubuntu-20.04:latest' || matrix.os == 'ubuntu-22.04' && 'rbanka974/umf2-ubuntu-22.04:latest' || matrix.os == 'ubuntu-24.04' &&  'rbanka974/umf2-ubuntu-24.04:latest'}}
+      image: ${{ matrix.os == 'ubuntu-20.04' && 'ghcr.io/rbanka1/umf2-ubuntu-20.04:latest' || matrix.os == 'ubuntu-22.04' && 'ghcr.io/rbanka1/umf2-ubuntu-22.04:latest' || matrix.os == 'ubuntu-24.04' &&  'ghcr.io/rbanka1/umf2-ubuntu-24.04:latest'}}
       options: --user root --privileged  
       volumes:
         - /home/runner/work/unified-memory-framework/unified-memory-framework:/home/runner/work/unified-memory-framework/unified-memory-framework
