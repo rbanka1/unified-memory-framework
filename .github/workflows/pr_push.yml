@@ -73,25 +73,9 @@ jobs:
   #         exit 1
 
   FastBuild:
-    runs-on: ubuntu-latest
     if: always() && (needs.BuildCIContainer.result == 'skipped' || needs.BuildCIContainer.result == 'success')
-    needs: [ BuildCIContainer]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with: 
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      - name: Checkout again to ensure context
-        uses: actions/checkout@v2
-      
-      - name: Run FastBuild
-        uses: ./.github/workflows/reusable_fast.yml
+    needs: [CodeChecks, DocsBuild, BuildCIContainer]
+    uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
