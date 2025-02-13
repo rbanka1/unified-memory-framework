@@ -9,11 +9,12 @@ on:
   #   pull_request:
   #   workflow_dispatch:
 
+permissions:
+  packages: write
+  contents: read
+
 jobs: 
   build-ci-container:
-    permissions:
-      contents: read
-      packages: write
     runs-on: ubuntu-latest
     outputs: 
       status: ${{ job.status }}
