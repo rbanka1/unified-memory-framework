@@ -78,7 +78,7 @@ jobs:
     needs: [ BuildCIContainer]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@2
+        uses: actions/checkout@v2
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
