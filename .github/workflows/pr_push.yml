@@ -86,6 +86,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Checkout again to ensure context
+        uses: actions/checkout@v2
       
       - name: Run FastBuild
         uses: ./.github/workflows/reusable_fast.yml
