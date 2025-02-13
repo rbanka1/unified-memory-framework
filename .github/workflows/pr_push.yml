@@ -72,17 +72,9 @@ jobs:
   #         exit 1
 
   FastBuild:
+    if: always() && (needs.BuildCIContainer.result == 'skipped' || needs.BuildCIContainer.result == 'success')
     needs: [CodeChecks, DocsBuild, BuildCIContainer]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for jobs
-        uses: yogeshlonkar/wait-for-jobs@v0
-        with: 
-          ignore-skipped: 'true'
-
-      - name: Run reusable workflow
-        uses: ./.github/workflows/reusable_fast.yml
-
+    uses: ./.github/workflows/reusable_fast.yml
   # Nightly:
   #   uses: ./.github/workflows/nightly.yml
   # FastBuild:
@@ -91,41 +83,51 @@ jobs:
   #   uses: ./.github/workflows/reusable_fast.yml
   Build:
     name: Basic builds
+    if: always() && (needs.FastBuild.result == 'success')
     needs: [FastBuild]
     uses: ./.github/workflows/reusable_basic.yml
   DevDax:
+    if: always() && (needs.FastBuild.result == 'success')
     needs: [FastBuild]
     uses: ./.github/workflows/reusable_dax.yml
   MultiNuma:
+    if: always() && (needs.FastBuild.result == 'success')
     needs: [FastBuild]
     uses: ./.github/workflows/reusable_multi_numa.yml
   L0:
+    if: always() && (needs.Build.result == 'success')
     needs: [Build]
     uses: ./.github/workflows/reusable_gpu.yml
     with:
       name: "LEVEL_ZERO"
       shared_lib: "['ON']"
   CUDA:
+    if: always() && (needs.Build.result == 'success')
     needs: [Build]
     uses: ./.github/workflows/reusable_gpu.yml
     with:
       name: "CUDA"
       shared_lib: "['ON']"
   Sanitizers:
+    if: always() && (needs.FastBuild.result == 'success')
     needs: [FastBuild]
     uses: ./.github/workflows/reusable_sanitizers.yml
   QEMU:
+    if: always() && (needs.FastBuild.result == 'success')
     needs: [FastBuild]
     uses: ./.github/workflows/reusable_qemu.yml
     with:
       short_run: true
   Benchmarks:
+    if: always() && (needs.Build.result == 'success')
     needs: [Build]
     uses: ./.github/workflows/reusable_benchmarks.yml
   ProxyLib:
+    if: always() && (needs.Build.result == 'success')
     needs: [Build]
     uses: ./.github/workflows/reusable_proxy_lib.yml
   Valgrind:
+    if: always() && (needs.Build.result == 'success')
     needs: [Build]
     uses: ./.github/workflows/reusable_valgrind.yml
   Coverage:
@@ -138,16 +140,18 @@ jobs:
       trigger: "${{github.event_name}}"
   Coverage_partial:
     # partial coverage (on forks)
-    if: github.repository != 'oneapi-src/unified-memory-framework'
+    if: github.repository != 'oneapi-src/unified-memory-framework' && always() && (needs.Build.result == 'success')
     needs: [Build, QEMU, ProxyLib]
     uses: ./.github/workflows/reusable_coverage.yml
   CodeQL:
+    if: always() && (needs.Build.result == 'success')
     needs: [Build]
     permissions:
       contents: read
       security-events: write
     uses: ./.github/workflows/reusable_codeql.yml
   Trivy:
+    if: always() && (needs.Build.result == 'success')
     needs: [Build]
     permissions:
       contents: read
