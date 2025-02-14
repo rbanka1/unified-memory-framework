@@ -62,7 +62,7 @@ RUN apt-get update \
 RUN apt-get update && \
 	apt-get install -y valgrind cmake hwloc libhwloc-dev libnuma-dev libtbb-dev
 
-# Install lcov
+# Install lcov 
 RUN apt-get update && \
 	apt-get install lcov -y
 
