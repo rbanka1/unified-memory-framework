@@ -36,12 +36,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -f .github/docker/ubuntu-20.04.Dockerfile -t ghcr.io/${{ github.repository }}/umf2-ubuntu-20.04:latest .
-          docker build -f .github/docker/ubuntu-22.04.Dockerfile -t ghcr.io/${{ github.repository }}/umf2-ubuntu-22.04:latest .
-          docker build -f .github/docker/ubuntu-24.04.Dockerfile -t ghcr.io/${{ github.repository }}/umf2-ubuntu-24.04:latest .
+          docker build -f .github/docker/ubuntu-20.04.Dockerfile -t ghcr.io/${{ github.actor }}/umf2-ubuntu-20.04:latest .
+          docker build -f .github/docker/ubuntu-22.04.Dockerfile -t ghcr.io/${{ github.actor }}/umf2-ubuntu-22.04:latest .
+          docker build -f .github/docker/ubuntu-24.04.Dockerfile -t ghcr.io/${{ github.actor }}/umf2-ubuntu-24.04:latest .
 
       - name: Push Docker image to ghcr
         run: |
-          docker push ghcr.io/${{ github.repository }}/umf2-ubuntu-20.04:latest
-          docker push ghcr.io/${{ github.repository }}/umf2-ubuntu-22.04:latest
-          docker push ghcr.io/${{ github.repository }}/umf2-ubuntu-24.04:latest
+          docker push ghcr.io/${{ github.actor }}/umf2-ubuntu-20.04:latest
+          docker push ghcr.io/${{ github.actor }}/umf2-ubuntu-22.04:latest
+          docker push ghcr.io/${{ github.actor }}/umf2-ubuntu-24.04:latest
