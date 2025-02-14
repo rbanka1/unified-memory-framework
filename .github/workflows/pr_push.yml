@@ -21,7 +21,6 @@ jobs:
     uses: ./.github/workflows/reusable_checks.yml
   DocsBuild:
     uses: ./.github/workflows/reusable_docs_build.yml
-
   PrintModifiedFiles:
     runs-on: ubuntu-latest
     outputs:
@@ -41,47 +40,17 @@ jobs:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
-
   BuildCIContainer:
     if: ${{ contains(join(needs.PrintModifiedFiles.outputs.changed_files, ' '), '.github/docker/') }}
     needs: [PrintModifiedFiles]
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yml
-
-  # CheckStatus:
-  #     runs-on: ubuntu-latest
-  #     outputs:
-  #       check_status: ${{ steps.check_statuses.outputs.found }}
-  #     name: Check Status
-  #     needs: [CodeChecks, DocsBuild, BuildCIContainer]
-  #     if: always()
-  #     steps:
-  #     - uses: lwhiteley/dependent-jobs-result-check@v1
-  #       id: check_statuses
-  #       with:
-  #         statuses: failure
-  #         dependencies: ${{toJSON(needs) }}
-  #     - name: Log output
-  #       run: |
-  #         echo "statuses:" "${{ steps.check_statuses.outputs.statuses }}"
-  #         echo "jobs:" "${{ steps.check_statuses.outputs.jobs }}"
-  #         echo "found any?:" "${{ steps.check_statuses.outputs.found }}"
-    
-  #     - name: Cancel if failure
-  #       if: ${{ steps.check_statuses.outputs.found == 'true' }}
-  #       run: |
-  #         exit 1
-
+  Nightly:
+    uses: ./.github/workflows/nightly.yml
   FastBuild:
     if: always() && (needs.BuildCIContainer.result == 'skipped' || needs.BuildCIContainer.result == 'success')
     needs: [CodeChecks, DocsBuild, BuildCIContainer]
     uses: ./.github/workflows/reusable_fast.yml
-  # Nightly:
-  #   uses: ./.github/workflows/nightly.yml
-  # FastBuild:
-  #   name: Fast builds
-  #   needs: [CodeChecks, DocsBuild]
-  #   uses: ./.github/workflows/reusable_fast.yml
   Build:
     name: Basic builds
     if: always() && (needs.FastBuild.result == 'success')
