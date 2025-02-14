@@ -15,7 +15,7 @@ jobs:
     name: Fast builds (Linux)
     runs-on: ${{ matrix.os }}
     container:
-      image: ${{ matrix.os == 'ubuntu-latest' && 'ghcr.io/rbanka1/unified-memory-framework/umf2-ubuntu-22.04:latest' || matrix.os == 'ubuntu-20.04' && 'ghcr.io/rbanka1/unified-memory-framework/umf2-ubuntu-20.04:latest' }}
+      image: ${{ matrix.os == 'ubuntu-latest' && 'ghcr.io/rbanka1/umf2-ubuntu-22.04:latest' || matrix.os == 'ubuntu-20.04' && 'ghcr.io/rbanka1/umf2-ubuntu-20.04:latest' }}
       options: --user root --privileged
       volumes:
         - /home/runner/work/unified-memory-framework/unified-memory-framework:/home/runner/work/unified-memory-framework/unified-memory-framework
