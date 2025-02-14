@@ -45,8 +45,6 @@ jobs:
     needs: [PrintModifiedFiles]
     secrets: inherit
     uses: ./.github/workflows/build_ci_container.yml
-  Nightly:
-    uses: ./.github/workflows/nightly.yml
   FastBuild:
     if: always() && (needs.BuildCIContainer.result == 'skipped' || needs.BuildCIContainer.result == 'success')
     needs: [CodeChecks, DocsBuild, BuildCIContainer]
