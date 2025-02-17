@@ -58,7 +58,7 @@ RUN apt-get update \
 	&& ldconfig \
 	&& rm -f /opt/umf/install_hwloc.sh
 
-# Install valgrind
+# Install valgrind 
 RUN apt-get update && \
 	apt-get install -y valgrind clang cmake hwloc libhwloc-dev libnuma-dev libtbb-dev
 
