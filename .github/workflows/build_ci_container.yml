@@ -3,11 +3,6 @@ name: BuildCIContainer
 on: 
   workflow_call:
   workflow_dispatch:
-  # push:
-  #   paths:
-  #     - '.github/docker/**'
-  #   pull_request:
-  #   workflow_dispatch:
 
 permissions:
   packages: write

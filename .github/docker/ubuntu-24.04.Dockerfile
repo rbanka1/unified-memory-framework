@@ -60,7 +60,7 @@ RUN apt-get update \
 
 # Install valgrind
 RUN apt-get update && \
-	apt-get install -y valgrind cmake hwloc libhwloc-dev libnuma-dev libtbb-dev
+	apt-get install -y valgrind clang cmake hwloc libhwloc-dev libnuma-dev libtbb-dev
 
 # Install lcov
 RUN apt-get update && \
