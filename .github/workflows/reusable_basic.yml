@@ -125,21 +125,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    # - name: Install libhwloc
-    #   if: matrix.os == 'ubuntu-24.04'
-    #   run: .github/scripts/install_hwloc.sh
-
-    # - name: Install TBB apt package
-    #   if: matrix.os == 'ubuntu-24.04' && matrix.install_tbb == 'ON'
-    #   run: |
-    #     sudo apt-get install -y libtbb-dev
-    
-    # - name: Install apt packages
-    #   if: matrix.os == 'ubuntu-24.04'
-    #   run: |
-    #     sudo apt-get update
-    #     sudo apt-get install -y clang cmake libnuma-dev
-
     - name: Install oneAPI basekit
       if: matrix.compiler.cxx == 'icpx'
       run: |
