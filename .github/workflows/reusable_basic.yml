@@ -113,12 +113,8 @@ jobs:
             disable_hwloc: 'OFF'
             link_hwloc_statically: 'ON'
     runs-on: ${{matrix.os}}
-    env:
-      UBuntu20: 'ghcr.io/${{ github.actor }}/umf2-ubuntu-20.04:latest'
-      UBuntu22: 'ghcr.io/${{ github.actor }}/umf2-ubuntu-22.04:latest'
-      UBuntu24: 'ghcr.io/${{ github.actor }}/umf2-ubuntu-24.04:latest'
     container:
-      image: ${{ matrix.os == 'ubuntu-20.04' && UBuntu20 || matrix.os == 'ubuntu-22.04' && UBuntu22 || matrix.os == 'ubuntu-24.04' &&  UBuntu24}}
+      image: ${{ matrix.os == 'ubuntu-20.04' && 'ghcr.io/rbanka1/umf2-ubuntu-20.04:latest' || matrix.os == 'ubuntu-22.04' && 'ghcr.io/rbanka1/umf2-ubuntu-22.04:latest' || matrix.os == 'ubuntu-24.04' &&  'ghcr.io/rbanka1/umf2-ubuntu-24.04:latest'}}
       options: --user root --privileged  
       volumes:
         - /home/runner/work/unified-memory-framework/unified-memory-framework:/home/runner/work/unified-memory-framework/unified-memory-framework

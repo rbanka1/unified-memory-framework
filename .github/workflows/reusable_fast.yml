@@ -14,9 +14,13 @@ jobs:
   FastBuild_Linux:
     name: Fast builds (Linux)
     runs-on: ${{ matrix.os }}
+    container:
+      image: ${{ matrix.os == 'ubuntu-latest' && 'ghcr.io/rbanka1/umf2-ubuntu-22.04:latest' || matrix.os == 'ubuntu-20.04' && 'ghcr.io/rbanka1/umf2-ubuntu-20.04:latest' }}
+      options: --user root --privileged
+      volumes:
+        - /home/runner/work/unified-memory-framework/unified-memory-framework:/home/runner/work/unified-memory-framework/unified-memory-framework
+
     env:
-      UBuntu20: 'ghcr.io/${{ github.actor }}/umf2-ubuntu-20.04:latest'
-      UBuntu22: 'ghcr.io/${{ github.actor }}/umf2-ubuntu-22.04:latest'
       VCPKG_PATH: "${{github.workspace}}/build/vcpkg/packages/hwloc_x64-windows;${{github.workspace}}/build/vcpkg/packages/tbb_x64-windows;${{github.workspace}}/build/vcpkg/packages/jemalloc_x64-windows"
     strategy:
       matrix:
@@ -41,11 +45,6 @@ jobs:
             build_tests: 'ON'
             extra_build_options: '-DCMAKE_BUILD_TYPE=Release'
             simple_cmake: 'ON'
-    container:
-      image: ${{ matrix.os == 'ubuntu-latest' && UBuntu22 || matrix.os == 'ubuntu-20.04' && UBuntu20 }}
-      options: --user root --privileged
-      volumes:
-        - /home/runner/work/unified-memory-framework/unified-memory-framework:/home/runner/work/unified-memory-framework/unified-memory-framework
 
     steps:
     - name: Checkout repository
