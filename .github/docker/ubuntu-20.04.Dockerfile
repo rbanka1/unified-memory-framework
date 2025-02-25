@@ -60,8 +60,8 @@ RUN apt-get update \
 	${TEST_DEPS} \
 	${MISC_DEPS} \
 	${HWLOC_DEPS} \
- && dos2unix /opt/umf/install_hwloc.sh \
- && bash -x /opt/umf/install_hwloc.sh \
+#  && dos2unix /opt/umf/install_hwloc.sh \
+ && bash /opt/umf/install_hwloc.sh \
  && ldconfig \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get clean all
