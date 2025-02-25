@@ -38,7 +38,6 @@ ARG TEST_DEPS="\
 ARG MISC_DEPS="\
 	automake \
 	clang \
-	g++-11 \
 	python3-pip \
 	sudo \
 	whois \
