@@ -48,7 +48,6 @@ RUN apt-get update \
 	${TEST_DEPS} \
 	${MISC_DEPS} \
 	${UMF_DEPS} \
- && /opt/umf/install_hwloc.sh \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get clean all
 
