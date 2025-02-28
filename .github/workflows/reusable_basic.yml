@@ -18,13 +18,13 @@ jobs:
     name: Ubuntu
     runs-on: ubuntu-latest
     container:
-      image: ${{ matrix.image }}
+      image: ghcr.io/bb-ur/umf-ubuntu-${{ matrix.ubuntu_ver }}:latest
       options: --user root --privileged
       volumes:
         - ${{ github.workspace }}:${{ github.workspace }}
     strategy:
       matrix:
-        image: ['ghcr.io/rbanka1/umf-ubuntu-20.04:latest', 'ghcr.io/rbanka1/umf-ubuntu-22.04:latest' ]
+        ubuntu_ver: ['20.04', '22.04']
         build_type: [Debug, Release]
         compiler: [{c: gcc, cxx: g++}]
         shared_library: ['OFF']
@@ -34,7 +34,7 @@ jobs:
         disable_hwloc: ['OFF']
         link_hwloc_statically: ['OFF']
         include:
-          - image: ghcr.io/rbanka1/umf-ubuntu-20.04:latest
+          - ubuntu_ver: 20.04
             build_type: Release
             compiler: {c: gcc-7, cxx: g++-7}
             shared_library: 'OFF'
@@ -43,7 +43,7 @@ jobs:
             install_tbb: 'ON'
             disable_hwloc: 'OFF'
             link_hwloc_statically: 'OFF'
-          - image: ghcr.io/rbanka1/umf-ubuntu-22.04:latest
+          - ubuntu_ver: 22.04
             build_type: Release
             compiler: {c: clang, cxx: clang++}
             shared_library: 'OFF'
@@ -52,7 +52,7 @@ jobs:
             install_tbb: 'ON'
             disable_hwloc: 'OFF'
             link_hwloc_statically: 'OFF'
-          - image: ghcr.io/rbanka1/umf-ubuntu-22.04:latest
+          - ubuntu_ver: 22.04
             build_type: Release
             compiler: {c: gcc, cxx: g++}
             shared_library: 'ON'
@@ -61,7 +61,7 @@ jobs:
             install_tbb: 'ON'
             disable_hwloc: 'OFF'
             link_hwloc_statically: 'OFF'
-          - image: ghcr.io/rbanka1/umf-ubuntu-24.04:latest
+          - ubuntu_ver: 24.04
             build_type: Debug
             compiler: {c: gcc, cxx: g++}
             shared_library: 'ON'
@@ -71,7 +71,7 @@ jobs:
             disable_hwloc: 'OFF'
             link_hwloc_statically: 'OFF'
           # test level_zero_provider='OFF' and cuda_provider='OFF'
-          - image: ghcr.io/rbanka1/umf-ubuntu-22.04:latest
+          - ubuntu_ver: 22.04
             build_type: Release
             compiler: {c: gcc, cxx: g++}
             shared_library: 'OFF'
@@ -81,7 +81,7 @@ jobs:
             disable_hwloc: 'OFF'
             link_hwloc_statically: 'OFF'
           # test icx compiler
-          - image: ghcr.io/rbanka1/umf-ubuntu-22.04:latest
+          - ubuntu_ver: 22.04
             build_type: Release
             compiler: {c: icx, cxx: icpx}
             shared_library: 'ON'
@@ -91,7 +91,7 @@ jobs:
             disable_hwloc: 'OFF'
             link_hwloc_statically: 'OFF'
           # test without installing TBB
-          - image: ghcr.io/rbanka1/umf-ubuntu-22.04:latest
+          - ubuntu_ver: 22.04
             build_type: Release
             compiler: {c: gcc, cxx: g++}
             shared_library: 'ON'
@@ -100,7 +100,7 @@ jobs:
             install_tbb: 'OFF'
             disable_hwloc: 'OFF'
             link_hwloc_statically: 'OFF'
-          - image: ghcr.io/rbanka1/umf-ubuntu-22.04:latest
+          - ubuntu_ver: 22.04
             build_type: Debug
             compiler: {c: gcc, cxx: g++}
             shared_library: 'ON'
@@ -109,7 +109,7 @@ jobs:
             install_tbb: 'ON'
             disable_hwloc: 'ON'
             link_hwloc_statically: 'OFF'
-          - image: ghcr.io/rbanka1/umf-ubuntu-22.04:latest
+          - ubuntu_ver: 22.04
             build_type: Release
             compiler: {c: gcc, cxx: g++}
             shared_library: 'ON'
