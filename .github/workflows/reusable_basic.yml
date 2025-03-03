@@ -168,9 +168,6 @@ jobs:
         ${{ matrix.compiler.cxx == 'icpx' && '. /opt/intel/oneapi/setvars.sh' || true }}
         LD_LIBRARY_PATH="${{env.BUILD_DIR}}/lib/:${LD_LIBRARY_PATH}" ctest --output-on-failure
 
-    - name: Set os name
-      run: echo "ARTIFACT_NAME=${{ matrix.ubuntu_ver }}" | sed -e 's|ghcr.io/rbanka1/||' -e 's|:|-|' >> $GITHUB_ENV
-
     - name: Check os coverage
       if:  ${{ matrix.build_type == 'Debug' && matrix.compiler.c == 'gcc' }}
       working-directory: ${{env.BUILD_DIR}}
