@@ -169,13 +169,13 @@ jobs:
         LD_LIBRARY_PATH="${{env.BUILD_DIR}}/lib/:${LD_LIBRARY_PATH}" ctest --output-on-failure
 
     - name: Set os name
-      run: echo "ARTIFACT_NAME=${{ matrix.image }}" | sed -e 's|ghcr.io/rbanka1/||' -e 's|:|-|' >> $GITHUB_ENV
+      run: echo "ARTIFACT_NAME=${{ matrix.ubuntu_ver }}" | sed -e 's|ghcr.io/rbanka1/||' -e 's|:|-|' >> $GITHUB_ENV
 
     - name: Check os coverage
       if:  ${{ matrix.build_type == 'Debug' && matrix.compiler.c == 'gcc' }}
       working-directory: ${{env.BUILD_DIR}}
       run: |
-        export COVERAGE_FILE_NAME=${{env.COVERAGE_NAME}}-${{env.ARTIFACT_NAME}}-shared-${{matrix.shared_library}}-no_hwloc-${{matrix.disable_hwloc}}
+        export COVERAGE_FILE_NAME=${{env.COVERAGE_NAME}}-${{env.ubuntu_ver}}-shared-${{matrix.shared_library}}-no_hwloc-${{matrix.disable_hwloc}}
         echo "COVERAGE_FILE_NAME: $COVERAGE_FILE_NAME"
         ../scripts/coverage/coverage_capture.sh $COVERAGE_FILE_NAME
         mkdir -p ${{env.COVERAGE_DIR}}
@@ -184,7 +184,7 @@ jobs:
     - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
       if:  ${{ matrix.build_type == 'Debug' && matrix.compiler.c == 'gcc' }}
       with:
-        name: ${{env.COVERAGE_NAME}}-${{env.ARTIFACT_NAME}}-shared-${{matrix.shared_library}}-no_hwloc-${{matrix.disable_hwloc}}
+        name: ${{env.COVERAGE_NAME}}-${{env.ubuntu_ver}}-shared-${{matrix.shared_library}}-no_hwloc-${{matrix.disable_hwloc}}
         path: ${{env.COVERAGE_DIR}}
 
     - name: Remove the installation directory

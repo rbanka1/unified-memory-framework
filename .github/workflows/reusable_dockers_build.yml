@@ -38,4 +38,3 @@ jobs:
         run: |
           docker build -f .github/docker/ubuntu-${{ matrix.ubuntu-version }}.Dockerfile -t ${{ env.IMG }} .
           docker push ${{ env.IMG }}
-          
