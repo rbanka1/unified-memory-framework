@@ -13,7 +13,7 @@ env:
 
 jobs:
   ubuntu-build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     container:
       image: ghcr.io/bb-ur/umf-${{ matrix.os }}:latest
       options: --user test_user --cap-add=SYS_NICE --cap-add=SYS_PTRACE
