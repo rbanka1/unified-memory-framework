@@ -15,4 +15,4 @@ jobs:
 
     steps:
     - name: workflow call test
-      run: echo "TEST TEST TEST"
+      run: echo "TEST TEST TEST test"
