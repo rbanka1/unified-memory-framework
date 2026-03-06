@@ -75,8 +75,8 @@ struct ctl_argument_parser {
 };
 
 struct ctl_argument {
-    size_t dest_size;                     /* size of the entire argument */
-    struct ctl_argument_parser parsers[]; /* array of 'fields' in arg */
+    size_t dest_size;                      /* size of the entire argument */
+    struct ctl_argument_parser parsers[8]; /* array of 'fields' in arg */
 };
 
 #define sizeof_member(type, member) sizeof(((type *)0)->member)
@@ -198,7 +198,7 @@ int ctl_arg_string(const void *arg, void *dest, size_t dest_size);
 #define CTL_NODE(name, ...) ctl_node_##__VA_ARGS__##_##name
 
 umf_result_t ctl_query(struct ctl *ctl, void *ctx,
-                       umf_ctl_query_source_t source, const char *name,
+                       umf_ctl_query_source_t source, const char *path,
                        umf_ctl_query_type_t type, void *arg, size_t size,
                        va_list args);
 

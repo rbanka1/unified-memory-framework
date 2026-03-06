@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2025 Intel Corporation
+# Copyright (C) 2022-2026 Intel Corporation
 # Under the Apache License v2.0 with LLVM Exceptions. See LICENSE.TXT.
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
@@ -32,7 +32,8 @@ if(UMF_CMAKE_VERSION VERSION_EQUAL "0.0.0")
     message(
         WARNING
             "UMF version is set to 0.0.0, which most likely is not expected! "
-            "Please checkout the git tags to get a proper version.")
+            "Please install git and checkout the git tags to get a proper version."
+    )
 endif()
 
 if(PROJECT_VERSION_PATCH GREATER 0)
@@ -276,7 +277,7 @@ if(UMF_LINK_HWLOC_STATICALLY)
         set(UMF_HWLOC_REPO "https://github.com/open-mpi/hwloc.git")
     endif()
     if(NOT DEFINED UMF_HWLOC_TAG)
-        set(UMF_HWLOC_TAG hwloc-2.10.0)
+        set(UMF_HWLOC_TAG hwloc-2.13.0)
     endif()
 
     message(
@@ -405,7 +406,7 @@ if(UMF_BUILD_LEVEL_ZERO_PROVIDER)
     else()
         set(LEVEL_ZERO_LOADER_REPO
             "https://github.com/oneapi-src/level-zero.git")
-        set(LEVEL_ZERO_LOADER_TAG v1.22.4)
+        set(LEVEL_ZERO_LOADER_TAG v1.26.3)
 
         message(STATUS "Fetching Level Zero loader (${LEVEL_ZERO_LOADER_TAG}) "
                        "from ${LEVEL_ZERO_LOADER_REPO} ...")
@@ -463,7 +464,7 @@ if(UMF_BUILD_CUDA_PROVIDER)
     else()
         set(CUDA_REPO
             "https://gitlab.com/nvidia/headers/cuda-individual/cudart.git")
-        set(CUDA_TAG cuda-12.5.1)
+        set(CUDA_TAG cuda-12.6.3)
 
         message(
             STATUS "Fetching CUDA (${CUDA_TAG}) headers from ${CUDA_REPO} ...")

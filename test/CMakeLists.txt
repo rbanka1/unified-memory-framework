@@ -35,8 +35,9 @@ endif()
 enable_testing()
 
 set(UMF_TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(UMF_UTILS_DIR ${UMF_CMAKE_SOURCE_DIR}/src/utils)
-set(UMF_BA_DIR ${UMF_CMAKE_SOURCE_DIR}/src/base_alloc)
+set(UMF_SRC_DIR ${UMF_CMAKE_SOURCE_DIR}/src)
+set(UMF_UTILS_DIR ${UMF_SRC_DIR}/utils)
+set(UMF_BA_DIR ${UMF_SRC_DIR}/base_alloc)
 
 function(build_umf_test)
     # Parameters:
@@ -148,8 +149,9 @@ function(add_umf_test)
     if(WINDOWS)
         # add PATH to DLL on Windows
         set(DLL_PATH_LIST
-            "${DLL_PATH_LIST};PATH=path_list_append:${CMAKE_BINARY_DIR}/bin/;PATH=path_list_append:${CMAKE_BINARY_DIR}/bin/$<CONFIG>/"
-        )
+            "${DLL_PATH_LIST};"
+            "PATH=path_list_append:${CMAKE_BINARY_DIR}/bin/;"
+            "PATH=path_list_append:${CMAKE_BINARY_DIR}/bin/$<CONFIG>/")
 
         # append PATH to DLLs NOTE: this would work only for the CMake ver >= #
         # 3.22. For the older versions, the PATH variable should be set in the
@@ -157,6 +159,22 @@ function(add_umf_test)
         set_property(TEST ${TEST_NAME} PROPERTY ENVIRONMENT_MODIFICATION
                                                 "${DLL_PATH_LIST}")
     endif()
+endfunction()
+
+function(add_umf_mocked_test test_name test_source_file)
+    add_umf_test(
+        NAME ${test_name}
+        SRCS ${test_source_file} ${UMF_UTILS_DIR}/utils_level_zero.cpp
+        LIBS ${UMF_UTILS_FOR_TEST} ${UMF_BA_FOR_TEST} umf_test_mocks
+             GTest::gmock)
+
+    set_tests_properties(
+        test_${test_name} PROPERTIES
+        ENVIRONMENT
+        "UMF_LOG=level:debug\\\\\\\\;flush:debug\\\\\\\\;output:stdout;UMF_ZE_LOADER_LIB_NAME=$<TARGET_FILE:umf_ze_loopback>"
+    )
+    target_compile_definitions(test_${test_name} PUBLIC USE_DLOPEN=1)
+    add_dependencies(test_${test_name} umf_ze_loopback)
 endfunction()
 
 add_subdirectory(common)
@@ -214,7 +232,7 @@ add_umf_test(
 add_umf_test(
     NAME ctl_api
     SRCS ctl/ctl_api.cpp
-    LIBS ${UMF_UTILS_FOR_TEST})
+    LIBS ${UMF_UTILS_FOR_TEST} ${UMF_BA_FOR_TEST})
 
 add_umf_test(
     NAME utils_common
@@ -236,6 +254,8 @@ build_umf_test(
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ctl/ctl_env_config1.cfg
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/ctl)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ctl/ctl_env_config2.cfg
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/ctl)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ctl/ctl_env_disjoint_pool.cfg
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/ctl)
 
 add_umf_test(
@@ -430,6 +450,12 @@ else()
         LIBS ${UMF_UTILS_FOR_TEST} ${UMF_BA_FOR_TEST})
 endif()
 
+if(UMF_BUILD_LEVEL_ZERO_PROVIDER)
+    add_umf_mocked_test(provider_level_zero_residency
+                        providers/provider_level_zero_residency.cpp)
+    add_umf_mocked_test(pool_residency pools/pool_residency.cpp)
+endif()
+
 if(UMF_BUILD_GPU_TESTS AND UMF_LEVEL_ZERO_ENABLED)
     # we have two test binaries here that use the same sources, but differ in
     # the way they are linked to the Level Zero (statically or at runtime using
@@ -588,12 +614,37 @@ function(add_umf_ipc_test)
         set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
     endif()
 
-    file(COPY ${SRC_DIR}/${ARG_TEST}.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    if(WINDOWS)
+        set(EXT py)
+    else()
+        set(EXT sh)
+    endif()
 
-    add_test(
-        NAME ${TEST_NAME}
-        COMMAND ${ARG_TEST}.sh
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    file(COPY ${SRC_DIR}/${ARG_TEST}.${EXT}
+         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+    if(WINDOWS)
+        add_test(
+            NAME ${TEST_NAME}
+            COMMAND python ${ARG_TEST}.${EXT}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    else()
+        add_test(
+            NAME ${TEST_NAME}
+            COMMAND ${ARG_TEST}.${EXT}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    endif()
+
+    if(WINDOWS)
+        set_tests_properties(${TEST_NAME} PROPERTIES
+                             ENVIRONMENT "BUILD_TYPE=${CMAKE_BUILD_TYPE}")
+        # add PATH to DLL on Windows
+        set(DLL_PATH_LIST
+            "${DLL_PATH_LIST};PATH=path_list_append:${CMAKE_BINARY_DIR}/bin/;PATH=path_list_append:${CMAKE_BINARY_DIR}/bin/$<CONFIG>/"
+        )
+        set_property(TEST ${TEST_NAME} PROPERTY ENVIRONMENT_MODIFICATION
+                                                "${DLL_PATH_LIST}")
+    endif()
 
     set_tests_properties(${TEST_NAME} PROPERTIES LABELS "umf")
     set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 60)
@@ -602,6 +653,42 @@ function(add_umf_ipc_test)
     endif()
 endfunction()
 
+if(WINDOWS)
+    set(UMF_IPC_LIBS ws2_32)
+endif()
+
+if(UMF_BUILD_GPU_TESTS AND UMF_LEVEL_ZERO_ENABLED)
+    build_umf_test(
+        NAME ipc_level_zero_prov_consumer
+        SRCS providers/ipc_level_zero_prov_consumer.c common/ipc_common.c
+             providers/ipc_level_zero_prov_common.c
+             ${UMF_UTILS_DIR}/utils_level_zero.cpp
+        LIBS ze_loader ${UMF_IPC_LIBS} ${UMF_UTILS_FOR_TEST})
+    build_umf_test(
+        NAME ipc_level_zero_prov_producer
+        SRCS providers/ipc_level_zero_prov_producer.c common/ipc_common.c
+             providers/ipc_level_zero_prov_common.c
+             ${UMF_UTILS_DIR}/utils_level_zero.cpp
+        LIBS ze_loader ${UMF_IPC_LIBS} ${UMF_UTILS_FOR_TEST})
+    add_umf_ipc_test(TEST ipc_level_zero_prov SRC_DIR providers)
+endif()
+
+if(UMF_BUILD_GPU_TESTS AND UMF_BUILD_CUDA_PROVIDER)
+    build_umf_test(
+        NAME ipc_cuda_prov_consumer
+        SRCS providers/ipc_cuda_prov_consumer.c common/ipc_common.c
+             providers/ipc_cuda_prov_common.c providers/cuda_helpers.cpp
+        LIBS cuda ${UMF_IPC_LIBS} ${UMF_UTILS_FOR_TEST})
+    build_umf_test(
+        NAME ipc_cuda_prov_producer
+        SRCS providers/ipc_cuda_prov_producer.c common/ipc_common.c
+             providers/ipc_cuda_prov_common.c providers/cuda_helpers.cpp
+        LIBS cuda ${UMF_IPC_LIBS} ${UMF_UTILS_FOR_TEST})
+    add_umf_ipc_test(TEST ipc_cuda_prov SRC_DIR providers)
+endif()
+
+# TODO IPC tests for OS, file, devdax providers and proxy lib are supported only
+# on Linux - skipping
 if(LINUX)
     if(UMF_POOL_SCALABLE_ENABLED)
         build_umf_test(
@@ -645,39 +732,11 @@ if(LINUX)
         add_umf_ipc_test(TEST ipc_file_prov_fsdax)
     endif()
 
-    # TODO add IPC tests for CUDA
-
-    if(UMF_BUILD_GPU_TESTS AND UMF_LEVEL_ZERO_ENABLED)
-        build_umf_test(
-            NAME ipc_level_zero_prov_consumer
-            SRCS providers/ipc_level_zero_prov_consumer.c common/ipc_common.c
-                 providers/ipc_level_zero_prov_common.c
-                 ${UMF_UTILS_DIR}/utils_level_zero.cpp
-            LIBS ze_loader ${UMF_UTILS_FOR_TEST})
-        build_umf_test(
-            NAME ipc_level_zero_prov_producer
-            SRCS providers/ipc_level_zero_prov_producer.c common/ipc_common.c
-                 providers/ipc_level_zero_prov_common.c
-                 ${UMF_UTILS_DIR}/utils_level_zero.cpp
-            LIBS ze_loader ${UMF_UTILS_FOR_TEST})
-        add_umf_ipc_test(TEST ipc_level_zero_prov SRC_DIR providers)
-    endif()
-
-    if(UMF_BUILD_GPU_TESTS AND UMF_BUILD_CUDA_PROVIDER)
-        build_umf_test(
-            NAME ipc_cuda_prov_consumer
-            SRCS providers/ipc_cuda_prov_consumer.c common/ipc_common.c
-                 providers/ipc_cuda_prov_common.c providers/cuda_helpers.cpp
-            LIBS cuda ${UMF_UTILS_FOR_TEST})
-        build_umf_test(
-            NAME ipc_cuda_prov_producer
-            SRCS providers/ipc_cuda_prov_producer.c common/ipc_common.c
-                 providers/ipc_cuda_prov_common.c providers/cuda_helpers.cpp
-            LIBS cuda ${UMF_UTILS_FOR_TEST})
-        add_umf_ipc_test(TEST ipc_cuda_prov SRC_DIR providers)
-    endif()
 else()
-    message(STATUS "IPC tests are supported on Linux only - skipping")
+    message(
+        STATUS
+            "IPC tests for OS, file, devdax providers and proxy lib are supported only on Linux - skipping"
+    )
 endif()
 
 if(LINUX

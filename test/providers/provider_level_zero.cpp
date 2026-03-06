@@ -204,19 +204,35 @@ TEST_F(LevelZeroProviderInit, FailNonNullDevice) {
     umfLevelZeroMemoryProviderParamsDestroy(hParams);
 }
 
-TEST_F(test, FailMismatchedResidentHandlesCount) {
+static void
+invalidResidentDevicesHandlesTestHelper(ze_device_handle_t *hDevices,
+                                        uint32_t deviceCount) {
     const umf_memory_provider_ops_t *ops = umfLevelZeroMemoryProviderOps();
     ASSERT_NE(ops, nullptr);
 
     umf_level_zero_memory_provider_params_handle_t hParams = nullptr;
-    umf_result_t result = umfLevelZeroMemoryProviderParamsCreate(&hParams);
-    ASSERT_EQ(result, UMF_RESULT_SUCCESS);
+    const umf_result_t create_result =
+        umfLevelZeroMemoryProviderParamsCreate(&hParams);
+    ASSERT_EQ(create_result, UMF_RESULT_SUCCESS);
 
-    result = umfLevelZeroMemoryProviderParamsSetResidentDevices(hParams,
-                                                                nullptr, 99);
-    ASSERT_EQ(result, UMF_RESULT_ERROR_INVALID_ARGUMENT);
+    const umf_result_t set_resident_result =
+        umfLevelZeroMemoryProviderParamsSetResidentDevices(hParams, hDevices,
+                                                           deviceCount);
+    ASSERT_EQ(set_resident_result, UMF_RESULT_ERROR_INVALID_ARGUMENT);
 
     umfLevelZeroMemoryProviderParamsDestroy(hParams);
+}
+
+TEST_F(test, FailMismatchedResidentHandlesCount) {
+    invalidResidentDevicesHandlesTestHelper(nullptr, 99);
+}
+
+TEST_F(test, FailRedundantResidentDeviceHandles) {
+    std::vector<ze_device_handle_t> hDevices{
+        reinterpret_cast<ze_device_handle_t>(0x100),
+        reinterpret_cast<ze_device_handle_t>(0x101),
+        reinterpret_cast<ze_device_handle_t>(0x100)};
+    invalidResidentDevicesHandlesTestHelper(hDevices.data(), 3);
 }
 
 class LevelZeroMemoryAccessor : public MemoryAccessor {
@@ -457,6 +473,41 @@ TEST_P(umfLevelZeroProviderTest, ctl_stats) {
                     sizeof(peak), provider);
     ASSERT_EQ(ret, UMF_RESULT_SUCCESS);
     ASSERT_EQ(peak, 0u);
+    umfMemoryProviderDestroy(provider);
+}
+
+TEST_P(umfLevelZeroProviderTest, ctl_use_import_export_for_IPC) {
+    umf_memory_provider_handle_t provider = nullptr;
+    umf_result_t ret = umfMemoryProviderCreate(umfLevelZeroMemoryProviderOps(),
+                                               params, &provider);
+    ASSERT_EQ(ret, UMF_RESULT_SUCCESS);
+    ASSERT_NE(provider, nullptr);
+
+    // Test reading the default value (0 = IPC)
+    int use_import_export_for_IPC = 1; // Set to invalid value first
+    ret =
+        umfCtlGet("umf.provider.by_handle.{}.params.use_import_export_for_IPC",
+                  &use_import_export_for_IPC, sizeof(use_import_export_for_IPC),
+                  provider);
+    ASSERT_EQ(ret, UMF_RESULT_SUCCESS);
+    ASSERT_EQ(use_import_export_for_IPC, 0); // Default is IPC (0)
+
+    // Test writing a new value (1 = import/export)
+    int new_policy = 1;
+    ret =
+        umfCtlSet("umf.provider.by_handle.{}.params.use_import_export_for_IPC",
+                  &new_policy, sizeof(new_policy), provider);
+    ASSERT_EQ(ret, UMF_RESULT_SUCCESS);
+
+    // Test reading the updated value
+    use_import_export_for_IPC = 0; // Set to different value first
+    ret =
+        umfCtlGet("umf.provider.by_handle.{}.params.use_import_export_for_IPC",
+                  &use_import_export_for_IPC, sizeof(use_import_export_for_IPC),
+                  provider);
+    ASSERT_EQ(ret, UMF_RESULT_SUCCESS);
+    ASSERT_EQ(use_import_export_for_IPC, 1); // Should be import/export (1)
+
     umfMemoryProviderDestroy(provider);
 }
 

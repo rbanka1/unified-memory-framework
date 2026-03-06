@@ -4,9 +4,9 @@ black==24.3.0
 clang-format==15.0.7
 cmake-format==0.6.13
 # Linting the source code
-bandit==1.8.6
+bandit==1.9.3
 # Tests
-packaging==25.0
+packaging==26.0
 # Generating HTML documentation
 pygments==2.19.2
 sphinxcontrib_applehelp==2.0.0
@@ -19,5 +19,5 @@ sphinx==8.1.3
 sphinx_book_theme==1.1.3
 # Spelling check in documentation
 codespell==2.4.1
-pyenchant==3.2.2
-sphinxcontrib-spelling==8.0.1
+pyenchant==3.3.0
+sphinxcontrib-spelling==8.0.2

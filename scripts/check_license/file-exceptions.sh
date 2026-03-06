@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# Copyright (C) 2025 Intel Corporation
+# Copyright (C) 2025-2026 Intel Corporation
 # Under the Apache License v2.0 with LLVM Exceptions. See LICENSE.TXT.
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
@@ -35,4 +35,5 @@ grep -v -E -e 'benchmark/ubench.h' \
            -e '.spellcheck-conf.toml' \
            -e '.trivyignore' \
            -e '.xml$' \
-           -e '.yml$'
+           -e '.yml$' \
+           -e 'VERSION'

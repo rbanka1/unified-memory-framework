@@ -21,6 +21,9 @@ documentation, which includes the code of the
 [basic example](https://github.com/oneapi-src/unified-memory-framework/blob/main/examples/basic/basic.c).
 There are also more advanced examples that allocate USM memory from the [Level Zero device](examples/level_zero_shared_memory/level_zero_shared_memory.c) using the Level Zero API and UMF Level Zero memory provider and [CUDA device](examples/cuda_shared_memory/cuda_shared_memory.c) using the CUDA API and UMF CUDA memory provider.
 
+UMF's experimental CTL API is showcased in the [CTL example](examples/ctl/ctl.c),
+which explores provider and pool statistics, and in the [custom CTL example](examples/ctl/custom_ctl.c), which wires CTL support into a custom memory provider. These examples rely on experimental headers which may change in future releases.
+
 ## Build
 
 ### Requirements
@@ -128,7 +131,7 @@ List of options provided by CMake:
 | UMF_BUILD_EXAMPLES | Build UMF examples | ON/OFF | ON |
 | UMF_BUILD_FUZZTESTS | Build UMF fuzz tests (supported only on Linux with Clang) | ON/OFF | OFF |
 | UMF_BUILD_GPU_EXAMPLES | Build UMF GPU examples | ON/OFF | OFF |
-| UMF_DEVELOPER_MODE | Enable additional developer checks | ON/OFF | OFF |
+| UMF_DEVELOPER_MODE | Enable additional developer checks and logs | ON/OFF | OFF |
 | UMF_FORMAT_CODE_STYLE | Add clang, cmake, and black -format-check and -format-apply targets to make | ON/OFF | OFF |
 | UMF_TESTS_FAIL_ON_SKIP | Treat skips in tests as fail | ON/OFF | OFF |
 | UMF_USE_ASAN | Enable AddressSanitizer checks | ON/OFF | OFF |
